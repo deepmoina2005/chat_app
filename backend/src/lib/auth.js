@@ -26,4 +26,10 @@ export const auth = betterAuth({
   ],
   debug: process.env.NODE_ENV !== "production",
   allowDangerousConnections: process.env.NODE_ENV !== "production",
+  advanced: {
+    cookie: {
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+    }
+  }
 });
