@@ -17,7 +17,8 @@ export const io = setupSocketIo(httpServer)
 
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.FRONTEND_URL
+  "http://127.0.0.1:5173",
+  process.env.FRONTEND_URL,
 ].filter(Boolean);
 
 app.use(cors({
@@ -46,10 +47,13 @@ app.get("/" , (req , res)=>{
     res.send("Hello World from Backend!")
 })
 
-httpServer.listen(3000 , ()=>{
-    console.log(`Server is running on http://localhost:3000`);
-  console.log(`Socket.IO server is ready`);
-})
+const PORT = process.env.PORT || 3000;
+httpServer.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    console.log(`Socket.IO server is ready`);
+});
+ 
+ 
  
  
  

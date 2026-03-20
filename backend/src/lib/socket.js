@@ -7,7 +7,7 @@ const onlineUsers = new Map();
 export function setupSocketIo(httpServer){
     const io = new Server(httpServer , {
         cors:{
-            origin: ["http://localhost:5173", "http://192.168.31.113:5173", process.env.FRONTEND_URL].filter(Boolean),
+            origin: ["http://localhost:5173", "http://127.0.0.1:5173", process.env.FRONTEND_URL].filter(Boolean),
             credentials:true
         }
     })
