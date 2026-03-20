@@ -34,7 +34,7 @@ app.use(cors({
   credentials: true,
 }));
 
-app.all("/api/auth/{*any}", toNodeHandler(auth));
+app.all("/api/auth/*", toNodeHandler(auth));
 // Mount express json middleware after Better Auth handler
 // or only apply it to routes that don't interact with Better Auth
 app.use(express.json());
@@ -56,6 +56,8 @@ httpServer.listen(PORT, () => {
 });
 
 export default app;
+ 
+ 
  
  
  
