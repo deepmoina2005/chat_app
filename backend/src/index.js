@@ -11,6 +11,7 @@ import { createServer } from "http";
 import { setupSocketIo } from "./lib/socket.js";
 
 const app = express()
+app.set("trust proxy", true)
 const httpServer = createServer(app)
 
 export const io = setupSocketIo(httpServer)
@@ -55,6 +56,9 @@ httpServer.listen(PORT, () => {
 });
 
 export default app;
+ 
+ 
+ 
  
  
  

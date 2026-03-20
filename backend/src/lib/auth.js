@@ -23,6 +23,7 @@ export const auth = betterAuth({
           "exp://192.168.*.*:*/**",
         ]
       : []),
+    ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
   ],
   debug: process.env.NODE_ENV !== "production",
   allowDangerousConnections: process.env.NODE_ENV !== "production",
@@ -30,6 +31,7 @@ export const auth = betterAuth({
     cookie: {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       secure: process.env.NODE_ENV === "production" ? true : false,
+      maxAge: 30 * 24 * 60 * 60 // 30 days
     }
   }
 });
