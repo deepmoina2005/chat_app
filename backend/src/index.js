@@ -1,0 +1,75 @@
+import express from "express";
+import cors from "cors";
+import "dotenv/config";
+import { toNodeHandler } from "better-auth/node";
+import {auth} from "./lib/auth.js"
+import { friendRouter } from "./modules/friend/friend.routes.js";
+import { chatRouter } from "./modules/chat/chat.routes.js";
+import { userRouter } from "./modules/user/user.routes.js";
+
+import { createServer } from "http";
+import { setupSocketIo } from "./lib/socket.js";
+
+const app = express()
+const httpServer = createServer(app)
+
+export const io = setupSocketIo(httpServer)
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes(origin + "/")) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+
+app.all("/api/auth/{*any}", toNodeHandler(auth));
+// Mount express json middleware after Better Auth handler
+// or only apply it to routes that don't interact with Better Auth
+app.use(express.json());
+
+
+
+app.use("/api/friends" , friendRouter)
+app.use("/api/chat" , chatRouter)
+app.use("/api/user" , userRouter)
+
+app.get("/" , (req , res)=>{
+    res.send("Hello World from Backend!")
+})
+
+httpServer.listen(3000 , ()=>{
+    console.log(`Server is running on http://localhost:3000`);
+  console.log(`Socket.IO server is ready`);
+})
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

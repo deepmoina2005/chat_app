@@ -1,0 +1,101 @@
+import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "@/store/hooks";
+import { setUser } from "@/store/slices/authSlice";
+import { toast } from "sonner";
+
+export default function RegisterPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const { data, error } = await authClient.signUp.email({
+        email,
+        password,
+        name,
+      });
+
+      if (error) {
+        toast.error(error.message || "Failed to register");
+        return;
+      }
+
+      dispatch(setUser(data.user));
+      toast.success("Account created successfully");
+      navigate("/");
+    } catch (error) {
+      toast.error("An error occurred during registration");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-background p-4">
+      <Card className="w-full max-w-md border-border bg-card/50 backdrop-blur-xl">
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="text-3xl font-bold tracking-tight">Create an account</CardTitle>
+          <CardDescription>
+            Enter your details to get started
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={handleRegister}>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Input
+                type="text"
+                placeholder="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="bg-background/50 border-border focus:ring-primary"
+              />
+            </div>
+            <div className="space-y-2">
+              <Input
+                type="email"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="bg-background/50 border-border focus:ring-primary"
+              />
+            </div>
+            <div className="space-y-2">
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="bg-background/50 border-border focus:ring-primary"
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            <Button className="w-full font-semibold" type="submit" disabled={isLoading}>
+              {isLoading ? "Creating account..." : "Sign Up"}
+            </Button>
+            <div className="text-center text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link to="/login" className="text-primary hover:underline font-medium">
+                Sign in
+              </Link>
+            </div>
+          </CardFooter>
+        </form>
+      </Card>
+    </div>
+  );
+}
